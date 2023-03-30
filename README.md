@@ -1,7 +1,10 @@
-# app
+# BCraft test task
+## First start with docker:
+ - docker-compose build
+ - docker-compose up database -d
+ - docker-compose run app alembic upgrade head
+ - docker-compose up
+## The other times
+ - docker-compose up
 
-This project was generated via [manage-fastapi](https://ycd.github.io/manage-fastapi/)! :tada:
-
-## License
-
-This project is licensed under the terms of the None license.
+# Be careful. PSQL stores its state in the parent folder/data

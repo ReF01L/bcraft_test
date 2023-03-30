@@ -20,11 +20,11 @@ class StatisticGetter(GetterDict):
         if key == 'cpc':
             if self._obj.clicks == 0:
                 return None
-            return self._obj.cost / self._obj.clicks
+            return round(self._obj.cost / self._obj.clicks, 2)
         elif key == 'cpm':
             if self._obj.views == 0:
                 return None
-            return self._obj.cost / self._obj.views * 1000
+            return round(self._obj.cost / self._obj.views * 1000, 2)
 
         return getattr(self._obj, key)
 
