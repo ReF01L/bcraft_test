@@ -1,9 +1,10 @@
 from datetime import date
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 from statistics import models, schemas
+from statistics.enums import SortingMethod
 
 
 def create_statistic(db: Session, statistic: schemas.StatisticCreate) -> models.Statistic:
@@ -12,17 +13,24 @@ def create_statistic(db: Session, statistic: schemas.StatisticCreate) -> models.
 
     return db_stat
 
-def get_statistics(db: Session, from_at: date, to: date) -> list[models.Statistic]:
+def get_statistics(
+        db: Session,
+        from_at: date,
+        to: date,
+        sorting_method: SortingMethod
+) -> list[models.Statistic]:
     query = db.query(
         models.Statistic.event_date,
-        func.sum(models.Statistic.cost).label('cost'),
-        func.sum(models.Statistic.views).label('views'),
-        func.sum(models.Statistic.clicks).label('clicks')
+        func.sum(models.Statistic.cost).label(sorting_method.COST.value),
+        func.sum(models.Statistic.views).label(sorting_method.VIEWS.value),
+        func.sum(models.Statistic.clicks).label(sorting_method.CLICKS.value),
+        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.clicks)).label(sorting_method.CPC.value),
+        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.views)).label(sorting_method.CPM.value)
     )
 
     query = query.filter(
         models.Statistic.event_date.between(from_at, to)  # type: ignore
-    ).order_by(models.Statistic.event_date.desc()).group_by(models.Statistic.event_date)  # type: ignore
+    ).group_by(models.Statistic.event_date).order_by(desc(sorting_method.value))
 
     return query.all()
 

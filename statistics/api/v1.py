@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app import dependency as global_dependency
 from app.core.config import settings
 from statistics import schemas, crud
-from statistics.enums import ErrorMessage
+from statistics.enums import ErrorMessage, SortingMethod
 
 router = APIRouter(prefix='/api/v1/stat', tags=['stat', 'web'])
 
@@ -32,6 +32,7 @@ async def create_statistics(
 async def get_statistics(
         from_at: str = Query(default=Required),
         to: str = Query(default=Required),
+        sorting: SortingMethod = Query(default=SortingMethod.EVENT_DATE),
         db: Session = Depends(global_dependency.get_db)
 ):
     try:
@@ -43,7 +44,7 @@ async def get_statistics(
             detail=ErrorMessage.INVALID_DATETIME_FORMAT.value % f'{from_at} \ {to}'
         )
 
-    stats = crud.get_statistics(db, starting_at, finishing_at)
+    stats = crud.get_statistics(db, starting_at, finishing_at, sorting)
 
     return stats
 

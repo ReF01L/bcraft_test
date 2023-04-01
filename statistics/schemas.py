@@ -18,13 +18,9 @@ class StatisticBase(BaseModel):
 class StatisticGetter(GetterDict):
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
         if key == 'cpc':
-            if self._obj.clicks == 0:
-                return None
-            return round(self._obj.cost / self._obj.clicks, 2)
+            return round(self._obj.cpc, 2)
         elif key == 'cpm':
-            if self._obj.views == 0:
-                return None
-            return round(self._obj.cost / self._obj.views * 1000, 2)
+            return round(self._obj.cpm * 1000, 2)
 
         return getattr(self._obj, key)
 
