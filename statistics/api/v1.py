@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app import dependency as global_dependency
 from app.core.config import settings
 from statistics import schemas, crud
-from statistics.enums import ErrorMessage, SortingMethod
+from statistics.enums import ErrorMessage, SortingMethod, ResponseDetail, ResponseDescription
 
 router = APIRouter(prefix='/api/v1/stat', tags=['stat', 'web'])
 
@@ -27,7 +27,13 @@ async def create_statistics(
 @router.get(
     '/',
     response_model=list[schemas.Statistic],
-    description='Метод показа статистики'
+    description='Метод показа статистики',
+    responses={
+        400: {
+            'description': ResponseDescription.BAD_REQUEST.value,
+            'content': {'application/json': {'example': {'detail': ResponseDetail.INVALID_DATE_FORMAT.value}}}
+        }
+    }
 )
 async def get_statistics(
         from_at: str = Query(default=Required),
@@ -41,7 +47,7 @@ async def get_statistics(
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=ErrorMessage.INVALID_DATETIME_FORMAT.value % f'{from_at} \ {to}'
+            detail=ErrorMessage.INVALID_DATE_FORMAT.value % f'{from_at} \ {to}'
         )
 
     stats = crud.get_statistics(db, starting_at, finishing_at, sorting)

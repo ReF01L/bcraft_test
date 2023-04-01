@@ -1,7 +1,7 @@
 # BCraft test task
 ## First start with docker:
  - docker-compose build
- - docker-compose up database -d
+ - docker-compose up database -d (Windows) / docker-compose ub -d database (Linux)
  - docker-compose run app alembic upgrade head
  - docker-compose up
 ## The other times

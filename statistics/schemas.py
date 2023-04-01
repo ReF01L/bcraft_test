@@ -58,4 +58,4 @@ class StatisticCreate(StatisticBase):
         try:
             return datetime.strptime(value, settings.DATETIME_FORMAT).date()
         except ValueError as ex:
-            raise ValueError(ErrorMessage.INVALID_DATETIME_FORMAT.value % value) from ex
+            raise ValueError(ErrorMessage.INVALID_DATE_FORMAT.value % value) from ex
