@@ -21,11 +21,11 @@ def get_statistics(
 ) -> list[models.Statistic]:
     query = db.query(
         models.Statistic.event_date,
-        func.sum(models.Statistic.cost).label(sorting_method.COST.value),
-        func.sum(models.Statistic.views).label(sorting_method.VIEWS.value),
-        func.sum(models.Statistic.clicks).label(sorting_method.CLICKS.value),
-        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.clicks)).label(sorting_method.CPC.value),
-        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.views)).label(sorting_method.CPM.value)
+        func.sum(models.Statistic.cost).label(SortingMethod.COST.value),
+        func.sum(models.Statistic.views).label(SortingMethod.VIEWS.value),
+        func.sum(models.Statistic.clicks).label(SortingMethod.CLICKS.value),
+        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.clicks)).label(SortingMethod.CPC.value),
+        (func.sum(models.Statistic.cost) / func.sum(models.Statistic.views)).label(SortingMethod.CPM.value)
     )
 
     query = query.filter(
